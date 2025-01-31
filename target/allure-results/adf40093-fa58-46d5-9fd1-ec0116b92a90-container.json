@@ -1,0 +1,1 @@
+{"uuid":"adf40093-fa58-46d5-9fd1-ec0116b92a90","name":"com.api.automation.tests.PostResquestTest","children":["1b469345-3258-4f66-948b-2449a257cbfe"],"befores":[{"name":"setup","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1738267999498,"stop":1738267999500}],"afters":[],"start":1738267993591,"stop":1738268000785}
