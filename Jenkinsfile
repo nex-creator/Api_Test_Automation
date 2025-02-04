@@ -51,6 +51,18 @@ pipeline {
 
         stage('Publish Allure Report') {
             steps {
+                script {
+                    def allureHome = tool name: 'Allure', type: 'ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation'
+                    def allureCmd = "${allureHome}/bin/allure"
+
+                    // Generate Allure report manually
+                    bat "${allureCmd} generate target/allure-results -o target/allure-report"
+
+                    // Archive and publish the report
+                    archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
+                }
+
+                // Display Allure report in Jenkins UI
                 allure([
                     includeProperties: false,
                     jdk: '',
