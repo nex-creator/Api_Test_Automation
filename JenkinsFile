@@ -7,12 +7,17 @@ pipeline {
 
     environment {
         ALLURE_RESULTS_DIR = "target/allure-results"
+        GITHUB_TOKEN = credentials('githubtoken')  // Fetch GitHub token from Jenkins credentials
     }
 
     stages {
         stage('Checkout Code') {
             steps {
-                git 'https://github.com/nex-creator/Api_Test_Automation.git'
+                script {
+                    git branch: 'master',
+                        credentialsId: 'githubtoken',
+                        url: "https://$GITHUB_TOKEN@github.com/nex-creator/Api_Test_Automation.git"
+                }
             }
         }
 
