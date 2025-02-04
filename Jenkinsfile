@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'  // Ensure Maven is installed in Jenkins
+        maven 'Maven'
     }
 
     environment {
@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     def gitCredentials = credentials('githubtoken')
-                    git branch: 'master',  // Change to 'main' if your branch is 'main'
+                    git branch: 'master',
                         credentialsId: 'githubtoken',
                         url: "https://github.com/nex-creator/Api_Test_Automation.git"
                 }
@@ -23,19 +23,29 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                bat 'mvn clean install'  // Use 'bat' instead of 'sh' for Windows
+                bat 'mvn clean install'
             }
         }
 
         stage('Run API Tests') {
             steps {
-                bat 'mvn test'  // Use 'bat' instead of 'sh' for Windows
+                bat 'mvn clean test -Dallure.results.directory=target/allure-results'
             }
         }
 
-        stage('Generate Allure Results') {
+        stage('Check Allure Results') {
             steps {
-                bat 'mvn allure:report'  // Generates the report
+                script {
+                    if (!fileExists('target/allure-results')) {
+                        error("ERROR: Allure results directory not found! Ensure tests are executed correctly.")
+                    }
+                }
+            }
+        }
+
+        stage('Generate Allure Report') {
+            steps {
+                bat 'mvn allure:report'
             }
         }
 
