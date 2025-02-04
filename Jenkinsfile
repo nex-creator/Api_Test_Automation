@@ -7,47 +7,42 @@ pipeline {
 
     environment {
         ALLURE_RESULTS_DIR = "target/allure-results"
-        GITHUB_TOKEN = credentials('githubtoken')  // Fetch GitHub token from Jenkins credentials
     }
 
     stages {
         stage('Checkout Code') {
             steps {
                 script {
-                    git branch: 'master',
+                    def gitCredentials = credentials('githubtoken')
+                    git branch: 'master',  // Change to 'main' if your branch name is 'main'
                         credentialsId: 'githubtoken',
-                        url: "https://$GITHUB_TOKEN@github.com/nex-creator/Api_Test_Automation.git"
+                        url: "https://github.com/nex-creator/Api_Test_Automation.git"
                 }
             }
         }
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean install'
+                bat 'mvn clean install'  // Use 'bat' instead of 'sh' for Windows
             }
         }
 
         stage('Run API Tests') {
             steps {
-                sh 'mvn test'
+                bat 'mvn test'  // Use 'bat' instead of 'sh' for Windows
             }
         }
 
         stage('Generate Allure Report') {
             steps {
-                sh 'mvn allure:report'  // Generates Allure HTML report
+                bat 'mvn allure:report'  // Use 'bat' instead of 'sh' for Windows
             }
         }
 
         stage('Publish Reports') {
             steps {
-                // Publish TestNG results
                 publishTestNG testResultsPattern: '**/target/surefire-reports/testng-results.xml'
-                
-                // Archive Allure results
                 archiveArtifacts artifacts: 'target/allure-results/**', fingerprint: true
-                
-                // Publish Allure reports (requires Allure Plugin in Jenkins)
                 allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
             }
         }
@@ -62,4 +57,5 @@ pipeline {
         }
     }
 }
+
 
