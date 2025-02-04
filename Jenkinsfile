@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     def gitCredentials = credentials('githubtoken')
-                    git branch: 'master',  // Change to 'main' if your branch name is 'main'
+                    git branch: 'master',  // Change to 'main' if your branch is 'main'
                         credentialsId: 'githubtoken',
                         url: "https://github.com/nex-creator/Api_Test_Automation.git"
                 }
@@ -33,17 +33,19 @@ pipeline {
             }
         }
 
-        stage('Generate Allure Report') {
+        stage('Generate Allure Results') {
             steps {
-                bat 'mvn allure:report'  // Use 'bat' instead of 'sh' for Windows
+                bat 'mvn allure:report'  // Generates the report
             }
         }
 
-        stage('Publish Reports') {
+        stage('Publish Allure Report') {
             steps {
-                publishTestNG testResultsPattern: '**/target/surefire-reports/testng-results.xml'
-                archiveArtifacts artifacts: 'target/allure-results/**', fingerprint: true
-                allure includeProperties: false, jdk: '', results: [[path: 'target/allure-results']]
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'target/allure-results']]
+                ])
             }
         }
     }
@@ -57,5 +59,4 @@ pipeline {
         }
     }
 }
-
 
