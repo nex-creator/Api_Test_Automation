@@ -7,6 +7,7 @@ pipeline {
 
     environment {
         ALLURE_RESULTS_DIR = "target/allure-results"
+        ALLURE_HOME = "C:\\Users\\umesh\\AppData\\Roaming\\npm"
     }
 
     stages {
@@ -45,20 +46,14 @@ pipeline {
 
         stage('Generate Allure Report') {
             steps {
-                bat 'mvn allure:report'
+                bat '"%ALLURE_HOME%\\allure.cmd" generate target/allure-results -o target/allure-report'
             }
         }
 
         stage('Publish Allure Report') {
             steps {
                 script {
-                    def allureHome = tool name: 'Allure', type: 'ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation'
-                    def allureCmd = "${allureHome}/bin/allure"
-
-                    // Generate Allure report manually
-                    bat "${allureCmd} generate target/allure-results -o target/allure-report"
-
-                    // Archive and publish the report
+                    // Archive Allure report so it can be viewed in Jenkins
                     archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
                 }
 
