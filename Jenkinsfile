@@ -51,23 +51,26 @@ pipeline {
         }
 
         stage('Publish Allure Report') {
-            steps {
-                script {
-                    // Archive the Allure report
-                    archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
-                }
+    steps {
+        script {
+            // Set Allure Home manually
+            def allureCmd = "C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd"
 
-                // Ensure Jenkins correctly finds the Allure command
-                def allureHome = tool name: 'Allure', type: 'ru.yandex.qatools.allure.jenkins.tools.AllureCommandlineInstallation'
-                
-                allure([
-                    includeProperties: false,
-                    jdk: '',
-                    results: [[path: 'target/allure-results']]
-                ])
-            }
+            // Generate Allure report manually
+            bat "${allureCmd} generate target/allure-results -o target/allure-report"
+
+            // Archive Allure report so it can be viewed in Jenkins
+            archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
         }
+
+        // Display Allure report in Jenkins UI
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'target/allure-results']]
+        ])
     }
+}
 
     post {
         always {
