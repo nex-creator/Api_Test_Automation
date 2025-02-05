@@ -48,15 +48,15 @@ pipeline {
                 // Ensure the old report directory is removed before generating a new one
                 bat 'if exist target\\allure-report rmdir /s /q target\\allure-report'
 
-                // Generate Allure report with --clean option
-                bat '"C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd" generate target/allure-results -o target/allure-report --clean'
+                // Generate Allure report using configured path
+                bat '"C:\\Users\\umesh\\Allure\\allure-2.32.2\\bin\\allure" generate target/allure-results -o target/allure-report --clean'
             }
         }
 
         stage('Publish Allure Report') {
             steps {
                 script {
-                    def allureCmd = 'C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd' // Set the correct path
+                    def allureCmd = 'C:\\Users\\umesh\\Allure\\allure-2.32.2\\bin\\allure' // Set the correct path
 
                     // Generate Allure report manually
                     bat "\"${allureCmd}\" generate target/allure-results -o target/allure-report --clean"
