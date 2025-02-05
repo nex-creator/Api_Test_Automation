@@ -52,11 +52,10 @@ pipeline {
         stage('Publish Allure Report') {
             steps {
                 script {
-                    def allureHome = tool name: 'Allure' // Use the configured tool
-                    def allureCmd = "${allureHome}\\bin\\allure" // Set proper path for execution
+                    def allureCmd = 'C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd' // Set the correct path
 
                     // Generate Allure report manually
-                    bat "${allureCmd} generate target/allure-results -o target/allure-report"
+                    bat "\"${allureCmd}\" generate target/allure-results -o target/allure-report"
 
                     // Archive Allure report so it can be viewed in Jenkins
                     archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
@@ -81,5 +80,4 @@ pipeline {
         }
     }
 }
-
 
