@@ -69,6 +69,7 @@ pipeline {
             jdk: '',
             results: [[path: 'target/allure-results']]
         ])
+		}
     }
 }
 
