@@ -45,7 +45,11 @@ pipeline {
 
         stage('Generate Allure Report') {
             steps {
-                bat '"C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd" generate target/allure-results -o target/allure-report'
+                // Ensure the old report directory is removed before generating a new one
+                bat 'if exist target\\allure-report rmdir /s /q target\\allure-report'
+
+                // Generate Allure report with --clean option
+                bat '"C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd" generate target/allure-results -o target/allure-report --clean'
             }
         }
 
@@ -55,7 +59,7 @@ pipeline {
                     def allureCmd = 'C:\\Users\\umesh\\AppData\\Roaming\\npm\\allure.cmd' // Set the correct path
 
                     // Generate Allure report manually
-                    bat "\"${allureCmd}\" generate target/allure-results -o target/allure-report"
+                    bat "\"${allureCmd}\" generate target/allure-results -o target/allure-report --clean"
 
                     // Archive Allure report so it can be viewed in Jenkins
                     archiveArtifacts artifacts: 'target/allure-report/**', fingerprint: true
